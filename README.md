@@ -3,13 +3,13 @@
 # mwklient
 [![Build Status](https://travis-ci.com/lrusso96/mwklient.svg?token=uoNxtXYBDHpqERGMiZA8&branch=master)](https://travis-ci.com/lrusso96/mwklient)
 
-[![Test coverage][test-coverage-img]](https://coveralls.io/r/lrusso96/mwclient)
+[![Test coverage][test-coverage-img]](https://coveralls.io/r/lrusso96/mwklient)
 [![Latest version][latest-version-img]](https://pypi.python.org/pypi/mwklient)
 [![MIT license][mit-license-img]](http://opensource.org/licenses/MIT)
 
 [test-coverage-img]: https://img.shields.io/coveralls/lrusso96/mwklient.svg
 [latest-version-img]: https://img.shields.io/pypi/v/mwklient.svg
-[mit-license-img]: https://img.shields.io/github/license/mwclient/mwclient.svg
+[mit-license-img]: https://img.shields.io/github/license/lrusso96/mwklient.svg
 
 mwklient (forked from [mwclient v0.9.3](https://github.com/mwclient/mwclient)) is a lightweight Python client library to the [MediaWiki API](https://mediawiki.org/wiki/API) which provides access to most API functionality.
 It works with Python 3.5+ and supports MediaWiki API 1.16+,

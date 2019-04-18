@@ -12,15 +12,15 @@ needs_pytest = set(['pytest', 'test', 'ptr']).intersection(sys.argv)
 pytest_runner = ['pytest-runner'] if needs_pytest else []
 
 setup(name='mwklient',
-      version='0.9.3',  # Use bumpversion to update
+      version='0.0.1',  # Use bumpversion to update
       description='MediaWiki API client',
       long_description=README,
       long_description_content_type='text/markdown',
       classifiers=[
           'Programming Language :: Python',
-          'Programming Language :: Python :: 3.4',
           'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6',
+          'Programming Language :: Python :: 3.7',
       ],
       keywords='mediawiki wikipedia',
       author='Luigi Russo',

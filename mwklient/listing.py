@@ -14,8 +14,8 @@ class List():
     continuing content.
     """
 
-    def __init__(self, site, list_name, prefix, *args, limit=None,
-                 return_values=None, max_items=None, **kwargs):
+    def __init__(self, site, list_name, prefix, limit=None,
+                 return_values=None, max_items=None, *args, **kwargs):
         # NOTE: Fix limit
         self.site = site
         self.list_name = list_name

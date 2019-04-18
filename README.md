@@ -1,8 +1,7 @@
 <div align="center"><img src="docs/source/logo.svg" width="300"/></div>
 
 # mwclient
-
-[![Build Status](https://travis-ci.com/lrusso96/mwclient.svg?token=uoNxtXYBDHpqERGMiZA8&branch=master)](https://travis-ci.com/lrusso96/mwclient)
+[![Build Status](https://travis-ci.com/lrusso96/mwklient.svg?token=uoNxtXYBDHpqERGMiZA8&branch=master)](https://travis-ci.com/lrusso96/mwklient)
 
 [![Test coverage][test-coverage-img]](https://coveralls.io/r/mwclient/mwclient)
 [![Latest version][latest-version-img]](https://pypi.python.org/pypi/mwclient)

@@ -1,16 +1,17 @@
+# encoding=utf-8
 from __future__ import print_function
-from requests_oauthlib import OAuth1
-import time
-import mock
-import pkg_resources  # part of setuptools
-import responses
-import requests
-import logging
-import mwklient
-import pytest
-import unittest
+
 from six import StringIO
-mwklient  # encoding=utf-8
+import unittest
+import pytest
+import mwklient
+import logging
+import requests
+import responses
+import pkg_resources  # part of setuptools
+import mock
+import time
+from requests_oauthlib import OAuth1
 
 
 try:

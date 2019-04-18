@@ -447,7 +447,7 @@ class Site():
                 raise errors.APIDisabledError
             raise errors.InvalidResponse(res)
 
-    def raw_index(self, action, *args, http_method='POST', **kwargs):
+    def raw_index(self, action, http_method='POST', *args, **kwargs):
         """Sends a call to index.php rather than the API."""
         kwargs['action'] = action
         kwargs['maxlag'] = self.max_lag

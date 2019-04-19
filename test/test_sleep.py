@@ -1,4 +1,7 @@
 # encoding=utf-8
+""" This module contains tests for mwklient.sleep.
+The class TestSleep defines unit test cases.
+"""
 import unittest
 import time
 from mock import call, patch

@@ -1,5 +1,5 @@
 # encoding=utf-8
-""" This module contains tests for util mwklient.util.
+""" This module contains tests for mwklient.util.
 The class TestUtil defines unit test cases.
 """
 import unittest

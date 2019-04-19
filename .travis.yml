@@ -10,7 +10,7 @@ matrix:
     - python: 3.7
       dist: xenial
       sudo: true
-      # Per https://github.com/travis-ci/travis-ci/issues/9815#issuecomment-426312699
+      # github.com/travis-ci/travis-ci/issues/9815#issuecomment-426312699
 
 install:
   - python setup.py install

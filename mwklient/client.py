@@ -596,11 +596,12 @@ class Site():
 
             if self.version is None or self.version[:2] >= (1, 24):
                 # We use raw_api() rather than api() because api() is adding
-                # "userinfo" to the query and this raises an readapideniederror
+                # "userinfo" to the query and this raises a readapideniederror
                 # if the wiki is read protected and we're trying to fetch a
                 # login token.
+                # fix v0.0.2: type parameter must passed, with value type_t
                 info = self.raw_api(
-                    'query', 'GET', meta='tokens', type_t=type_t)
+                    'query', 'GET', meta='tokens', type=type_t)
 
                 self.handle_api_result(info)
 

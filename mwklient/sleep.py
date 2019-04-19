@@ -5,7 +5,7 @@ from mwklient.errors import MaximumRetriesExceeded
 LOG = logging.getLogger(__name__)
 
 
-class Sleepers(object):
+class Sleepers():
 
     def __init__(self, max_retries, retry_timeout, callback=lambda *x: None):
         self.max_retries = max_retries
@@ -13,10 +13,11 @@ class Sleepers(object):
         self.callback = callback
 
     def make(self, args=None):
-        return Sleeper(args, self.max_retries, self.retry_timeout, self.callback)
+        return Sleeper(args, self.max_retries, self.retry_timeout,
+                       self.callback)
 
 
-class Sleeper(object):
+class Sleeper():
     """
     For any given operation, a `Sleeper` object keeps count of the number of
     retries. For each retry, the sleep time increases until the max number of

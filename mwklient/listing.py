@@ -25,15 +25,12 @@ class List():
         kwargs.update(args)
         self.args = kwargs
 
-        if limit is None:
+        if not limit:
             limit = site.api_limit
         self.args[self.prefix + 'limit'] = text_type(limit)
-
         self.count = 0
         self.max_items = max_items
-
         self._iter = iter(six.moves.range(0))
-
         self.last = False
         self.result_member = list_name
         self.return_values = return_values
@@ -70,10 +67,6 @@ class List():
         if self.return_values is not None:
             return item[self.return_values]
         return item
-
-    def next(self, *args, **kwargs):
-        """ For Python 2.x support """
-        return self.__next__(*args, **kwargs)
 
     def load_chunk(self):
         """Query a new chunk of data

@@ -903,10 +903,10 @@ class Site():
         - expiry: when the block runs out (infinity for indefinite blocks)
         - reason: the reason they are blocked
         - allowusertalk: key is present ("" string) if the user is allowed to
-        edit their user talk page
+          edit their user talk page
         - by: the administrator who blocked the user
         - nocreate: key is present (empty string) if the user's ability to
-        create accounts has been disabled.
+          create accounts has been disabled.
 
         """
 

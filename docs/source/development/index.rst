@@ -28,7 +28,7 @@ and automated) testing:
 Test suite
 ----------
 
-mwclient ships with a test suite based on `pytest <https://pytest.org>`_.
+mwklient ships with a test suite based on `pytest <https://pytest.org>`_.
 While it's far from complete, it can sometimes alert you if you break things.
 
 The easiest way to run the tests is:

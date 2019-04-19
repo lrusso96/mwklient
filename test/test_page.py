@@ -1,9 +1,10 @@
 # encoding=utf-8
-from __future__ import print_function
-
+""" This module contains tests for mwklient.page.
+The class TestPage defines unit test cases.
+"""
+import logging
 import unittest
 import pytest
-import logging
 import requests
 import responses
 import mock
@@ -17,12 +18,6 @@ try:
     import json
 except ImportError:
     import simplejson as json
-
-if __name__ == "__main__":
-    print()
-    print("Note: Running in stand-alone mode. Consult the README")
-    print("      (section 'Contributing') for advice on running tests.")
-    print()
 
 
 class TestPage(unittest.TestCase):
@@ -38,7 +33,7 @@ class TestPage(unittest.TestCase):
         mock_site.get.return_value = {
             'query': {'pages': {'1': {}}}
         }
-        page = Page(mock_site, title)
+        Page(mock_site, title)
 
         # test that Page called site.get with the right parameters
         mock_site.get.assert_called_once_with(
@@ -54,7 +49,7 @@ class TestPage(unittest.TestCase):
         }
         page = Page(mock_site, title)
 
-        assert page.exists is False
+        self.assertFalse(page.exists)
 
     @mock.patch('mwklient.client.Site')
     def test_existing_page(self, mock_site):
@@ -66,26 +61,27 @@ class TestPage(unittest.TestCase):
         }
         page = Page(mock_site, title)
 
-        assert page.exists is True
+        self.assertTrue(page.exists)
 
     @mock.patch('mwklient.client.Site')
     def test_invalid_title(self, mock_site):
         # Check that API page.exists is False for invalid title
 
         title = '[Test]'
+        reason = "The requested page title contains invalid characters: \"[\"."
         mock_site.get.return_value = {
             "query": {
                 "pages": {
                     "-1": {
                         "title": "[Test]",
-                        "invalidreason": "The requested page title contains invalid characters: \"[\".",
+                        "invalidreason": reason,
                         "invalid": ""
                     }
                 }
             }
         }
         with pytest.raises(InvalidPageTitle):
-            page = Page(mock_site, title)
+            Page(mock_site, title)
 
     @mock.patch('mwklient.client.Site')
     def test_pageprops(self, mock_site):
@@ -112,13 +108,13 @@ class TestPage(unittest.TestCase):
         }
         page = Page(mock_site, title)
 
-        assert page.exists is True
-        assert page.redirect is False
-        assert page.revision == 13355471
-        assert page.length == 58487
-        assert page.namespace == 0
-        assert page.name == title
-        assert page.page_title == title
+        self.assertTrue(page.exists)
+        self.assertFalse(page.redirect)
+        self.assertEqual(page.revision, 13355471)
+        self.assertEqual(page.length, 58487)
+        self.assertEqual(page.namespace, 0)
+        self.assertEqual(page.name, title)
+        self.assertEqual(page.page_title, title)
 
     @mock.patch('mwklient.client.Site')
     def test_protection_levels(self, mock_site):
@@ -149,23 +145,24 @@ class TestPage(unittest.TestCase):
 
         page = Page(mock_site, title)
 
-        assert page.protection == {
-            'edit': ('autoconfirmed', 'infinity'), 'move': ('sysop', 'infinity')}
-        assert page.can('read') is True
+        self.assertEqual(page.protection, {
+            'edit': ('autoconfirmed', 'infinity'),
+            'move': ('sysop', 'infinity')})
+        self.assertTrue(page.can('read'))
         # User does not have 'autoconfirmed' right
-        assert page.can('edit') is False
-        assert page.can('move') is False  # User does not have 'sysop' right
+        self.assertFalse(page.can('edit'))
+        self.assertFalse(page.can('move'))  # User does not have 'sysop' right
 
         mock_site.rights = ['read', 'edit', 'move', 'autoconfirmed']
 
-        assert page.can('edit') is True   # User has 'autoconfirmed'  right
-        assert page.can('move') is False  # User doesn't have 'sysop'  right
+        self.assertTrue(page.can('edit'))   # User has 'autoconfirmed'  right
+        self.assertFalse(page.can('move'))  # User doesn't have 'sysop'  right
 
         mock_site.rights = ['read', 'edit', 'move',
                             'autoconfirmed', 'editprotected']
 
-        assert page.can('edit') is True  # User has 'autoconfirmed'  right
-        assert page.can('move') is True  # User has 'sysop' right
+        self.assertTrue(page.can('edit'))  # User has 'autoconfirmed'  right
+        self.assertTrue(page.can('move'))  # User has 'sysop' right
 
     @mock.patch('mwklient.client.Site')
     def test_redirect(self, mock_site):
@@ -193,8 +190,8 @@ class TestPage(unittest.TestCase):
         }
         page = Page(mock_site, title)
 
-        assert page.exists is True
-        assert page.redirect is True
+        self.assertTrue(page.exists)
+        self.assertTrue(page.redirect)
 
     @mock.patch('mwklient.client.Site')
     def test_captcha(self, mock_site):
@@ -228,8 +225,8 @@ class TestPageApiArgs(unittest.TestCase):
         title = 'Some page'
         self.page_text = 'Hello world'
 
-        MockSite = mock.patch('mwklient.client.Site').start()
-        self.site = MockSite()
+        mock_site = mock.patch('mwklient.client.Site').start()
+        self.site = mock_site()
 
         self.site.get.return_value = {
             'query': {'pages': {'1': {'title': title}}}}
@@ -239,8 +236,9 @@ class TestPageApiArgs(unittest.TestCase):
 
         self.page = Page(self.site, title)
 
+        revisions = [{'*': 'Hello world', 'timestamp': '2014-08-29T22:25:15Z'}]
         self.site.get.return_value = {'query': {'pages': {'2': {
-            'ns': 0, 'pageid': 2, 'revisions': [{'*': 'Hello world', 'timestamp': '2014-08-29T22:25:15Z'}], 'title': title
+            'ns': 0, 'pageid': 2, 'revisions': revisions, 'title': title
         }}}}
 
     def get_last_api_call_args(self, http_method='POST'):
@@ -248,7 +246,7 @@ class TestPageApiArgs(unittest.TestCase):
             args, kwargs = self.site.get.call_args
         else:
             args, kwargs = self.site.post.call_args
-        action = args[0]
+        # action = args[0]
         args = args[1:]
         kwargs.update(args)
         return kwargs
@@ -261,15 +259,15 @@ class TestPageApiArgs(unittest.TestCase):
         text = self.page.text()
         args = self.get_last_api_call_args(http_method='GET')
 
-        assert text == self.page_text
-        assert args == {
+        self.assertEqual(text, self.page_text)
+        self.assertEqual(args, {
             'prop': 'revisions',
             'rvdir': 'older',
             'titles': self.page.page_title,
             'rvprop': 'content|timestamp',
             'rvlimit': '1',
             'rvslots': 'main',
-        }
+        })
 
     def test_get_page_text_cached(self):
         # Check page.text() caching
@@ -284,14 +282,14 @@ class TestPageApiArgs(unittest.TestCase):
 
     def test_get_section_text(self):
         # Check that the 'rvsection' parameter is sent to the API
-        text = self.page.text(section=0)
+        self.page.text(section=0)
         args = self.get_last_api_call_args(http_method='GET')
 
         assert args['rvsection'] == '0'
 
     def test_get_text_expanded(self):
         # Check that the 'rvexpandtemplates' parameter is sent to the API
-        text = self.page.text(expandtemplates=True)
+        self.page.text(expandtemplates=True)
         args = self.get_last_api_call_args(http_method='GET')
 
         assert self.site.expandtemplates.call_count == 1
@@ -345,12 +343,14 @@ class TestPageApiArgs(unittest.TestCase):
         with pytest.raises(ProtectedPageError) as pp_error:
             self.page.handle_edit_error(api_error, 'n/a')
 
-        assert pp_error.value.code == 'protectedpage'
-        assert str(
-            pp_error.value) == 'The "editprotected" right is required to edit this page'
+        self.assertEqual(pp_error.value.code, 'protectedpage')
+        error_value = 'The "editprotected" right is required to edit this page'
+        self.assertEqual(str(pp_error.value), error_value)
 
     def test_get_page_categories(self):
-        # Check that page.categories() works, and that a correct API call is made
+        """Check that page.categories() works and that a correct API call is
+        made
+        """
 
         self.site.get.return_value = {
             "batchcomplete": "",
@@ -373,19 +373,31 @@ class TestPageApiArgs(unittest.TestCase):
         cats = list(self.page.categories())
         args = self.get_last_api_call_args(http_method='GET')
 
-        assert {
+        iiprop = 'timestamp|user|comment|url|size|sha1|metadata|archivename'
+        dic = {
             'generator': 'categories',
             'titles': self.page.page_title,
-            'iiprop': 'timestamp|user|comment|url|size|sha1|metadata|archivename',
+            'iiprop': iiprop,
             'inprop': 'protection',
             'prop': 'info|imageinfo',
             'gcllimit': repr(self.page.site.api_limit),
-        } == args
+        }
+        self.assertEqual(dic, args)
 
-        assert set([c.name for c in cats]) == set([
+        self.assertEqual({c.name for c in cats}, set([
             'Category:1879 births',
             'Category:1955 deaths',
-        ])
+        ]))
+
+    def test_cheat_pylint(self):
+        """ Dumb test that avoids unused import warning for time package.
+        """
+        self.assertIsNotNone(json)
+        self.assertIsNotNone(logging)
+        self.assertIsNotNone(Category)
+        self.assertIsNotNone(requests)
+        self.assertIsNotNone(responses)
+        self.assertIsNotNone(Site)
 
 
 if __name__ == '__main__':

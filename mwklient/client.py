@@ -32,19 +32,19 @@ LOG = logging.getLogger(__name__)
 class Site():
     """A MediaWiki site identified by its hostname.
 
-        >>> import mwclient
+        >>> import mwklient
         >>> site = mwklient.Site('en.wikipedia.org')
 
     Do not include the leading "http://".
 
-    Mwclient assumes that the script path (where index.php and api.php are
+    mwknt assumes that the script path (where index.php and api.php are
     located) is '/w/'. If the site uses a different script path, you must
     specify this (path must end in a '/').
 
     Examples:
 
     >>> site = Site('vim.wikia.com', path='/')
-    >>> site = Site('sourceforge.net', path='/apps/mediawiki/mwclient')
+    >>> site = Site('sourceforge.net', path='/apps/mediawiki/mwknt')
 
     """
     api_limit = 500
@@ -103,10 +103,10 @@ class Site():
             if clients_useragent:
                 prefix = '{} - '.format(clients_useragent)
             self.connection.headers['User-Agent'] = (
-                '{prefix}MwClient/{ver} ({url})'.format(
+                '{prefix}mwknt/{ver} ({url})'.format(
                     prefix=prefix,
                     ver=__ver__,
-                    url='https://github.com/mwclient/mwclient'
+                    url='https://github.com/lrusso96/mwklient'
                 )
             )
             if custom_headers:

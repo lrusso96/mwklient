@@ -1,20 +1,20 @@
-class MwClientError(RuntimeError):
+class MwKlientError(RuntimeError):
     pass
 
 
-class MediaWikiVersionError(MwClientError):
+class MediaWikiVersionError(MwKlientError):
     pass
 
 
-class APIDisabledError(MwClientError):
+class APIDisabledError(MwKlientError):
     pass
 
 
-class MaximumRetriesExceeded(MwClientError):
+class MaximumRetriesExceeded(MwKlientError):
     pass
 
 
-class APIError(MwClientError):
+class APIError(MwKlientError):
 
     def __init__(self, code, info, kwargs):
         self.code = code
@@ -22,7 +22,7 @@ class APIError(MwClientError):
         super(APIError, self).__init__(code, info, kwargs)
 
 
-class InsufficientPermission(MwClientError):
+class InsufficientPermission(MwKlientError):
     pass
 
 
@@ -30,7 +30,7 @@ class UserBlocked(InsufficientPermission):
     pass
 
 
-class EditError(MwClientError):
+class EditError(MwKlientError):
     pass
 
 
@@ -52,7 +52,7 @@ class FileExists(EditError):
     pass
 
 
-class LoginError(MwClientError):
+class LoginError(MwKlientError):
 
     def __init__(self, site, code, info):
         super(LoginError, self).__init__(
@@ -71,7 +71,7 @@ class OAuthAuthorizationError(LoginError):
     pass
 
 
-class AssertUserFailedError(MwClientError):
+class AssertUserFailedError(MwKlientError):
 
     def __init__(self):
         super(AssertUserFailedError, self).__init__(
@@ -84,7 +84,7 @@ class AssertUserFailedError(MwClientError):
         return self.args[0]
 
 
-class EmailError(MwClientError):
+class EmailError(MwKlientError):
     pass
 
 
@@ -92,11 +92,11 @@ class NoSpecifiedEmail(EmailError):
     pass
 
 
-class NoWriteApi(MwClientError):
+class NoWriteApi(MwKlientError):
     pass
 
 
-class InvalidResponse(MwClientError):
+class InvalidResponse(MwKlientError):
 
     def __init__(self, response_text=None):
         super(InvalidResponse, self).__init__(
@@ -111,5 +111,5 @@ class InvalidResponse(MwClientError):
         return self.args[0]
 
 
-class InvalidPageTitle(MwClientError):
+class InvalidPageTitle(MwKlientError):
     pass

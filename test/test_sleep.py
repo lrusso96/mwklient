@@ -52,7 +52,7 @@ class TestSleepers(unittest.TestCase):
     def test_cheat_pylint(self):
         """ Dumb test that avoids unused import warning for time package.
         """
-        self.assertIsNotNone(time.daylight)
+        self.assertIsNotNone(time)
 
 
 if __name__ == '__main__':

@@ -110,11 +110,11 @@ class TestList(unittest.TestCase):
     def test_cheat_pylint(self):
         """ Dumb test that avoids unused import warning for time package.
         """
-        self.assertIsNotNone(logging.BASIC_FORMAT)
-        self.assertIsNotNone(pytest.approx)
-        self.assertIsNotNone(json.codecs)
-        self.assertIsNotNone(requests.adapters)
-        self.assertIsNotNone(responses.Call)
+        self.assertIsNotNone(logging)
+        self.assertIsNotNone(pytest)
+        self.assertIsNotNone(json)
+        self.assertIsNotNone(requests)
+        self.assertIsNotNone(responses)
 
 
 if __name__ == '__main__':

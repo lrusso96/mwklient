@@ -623,7 +623,7 @@ class Site():
         return self.tokens[type_t]
 
     def upload(self, file=None, filename=None, description='', ignore=False,
-               file_size=None, url=None, filekey=None, comment=None):
+               url=None, filekey=None, comment=None):
         """Upload a file to the site.
 
         Note that one of `file`, `filekey` and `url` must be specified, but not
@@ -635,7 +635,6 @@ class Site():
                             prefix like 'File:'
             description (str): Wikitext for the file description page.
             ignore (bool): True to upload despite any warnings.
-            file_size (int): Deprecated in mwclient 0.7
             url (str): URL to fetch the file from.
             filekey (str): Key that identifies a previous upload that was
                            stashed temporarily.
@@ -655,14 +654,7 @@ class Site():
             requests.exceptions.HTTPError
         """
 
-        if file_size is not None:
-            # Note DeprecationWarning is hidden by default since Python 2.7
-            warnings.warn(
-                'file_size is deprecated since mwclient 0.7',
-                DeprecationWarning
-            )
-
-        if filename is None:
+        if not filename:
             raise TypeError('filename must be specified')
 
         if len([x for x in [file, filekey, url] if x is not None]) != 1:
@@ -673,14 +665,14 @@ class Site():
         if not image.can('upload'):
             raise errors.InsufficientPermission(filename)
 
-        if comment is None:
+        if not comment:
             comment = description
             text = None
         else:
             comment = comment
             text = description
 
-        if file is not None:
+        if file:
             if not hasattr(file, 'read'):
                 file = open(file, 'rb')
 
@@ -714,7 +706,7 @@ class Site():
 
         postdata = predata
         files = None
-        if file is not None:
+        if file:
 
             # Workaround for https://github.com/mwclient/mwclient/issues/65
             # ----------------------------------------------------------------
@@ -732,7 +724,7 @@ class Site():
             if self.handle_api_result(info, kwargs=predata, sleeper=sleeper):
                 response = info.get('upload', {})
                 break
-        if file is not None:
+        if file:
             file.close()
         return response
 

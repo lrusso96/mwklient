@@ -34,5 +34,5 @@ Since then, he has been the lead maintainer of the project,
   which has attracted contributions from
   [several other people](../../graphs/contributors).
 
-For more details on the technical history of the project,
-  see the [CHANGELOG.md](CHANGELOG.md) document.
+In 2019 Luigi Russo forked the version 0.9.3 of mwclient, releasing mwklient
+0.0.1 (Python 3+ only)

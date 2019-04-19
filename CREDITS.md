@@ -35,4 +35,4 @@ Since then, he has been the lead maintainer of the project,
   [several other people](../../graphs/contributors).
 
 In 2019 Luigi Russo forked the version 0.9.3 of mwclient, releasing mwklient
-0.0.1 (Python 3+ only)
+0.0.1 (Python 3.5+ only)

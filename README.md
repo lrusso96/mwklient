@@ -8,7 +8,7 @@
 ![Latest Version](https://img.shields.io/pypi/v/mwklient.svg)
 ![Python Version](https://img.shields.io/pypi/pyversions/mwklient.svg)
 [![Doc Status](https://readthedocs.org/projects/mwklient/badge/?version=latest)](https://mwklient.readthedocs.io/en/latest/?badge=latest)
-      
+
 
 mwklient (forked from [mwclient v0.9.3](https://github.com/mwclient/mwclient)) is a lightweight Python client library to the [MediaWiki API](https://mediawiki.org/wiki/API) which provides access to most API functionality.
 It works with Python 3.5+ and supports MediaWiki API 1.16+,
@@ -24,7 +24,7 @@ Finally, it has a MIT license as well as the original mwclient.
 * page.undo(), revert a given edit page
 
 ## Installation
-The current stable [version 0.0.1](https://github.com/lrusso96/mwklient/archive/v0.0.1.zip)
+The current stable [version 0.0.2](https://github.com/lrusso96/mwklient/archive/v0.0.2.zip)
 is [available through PyPI](https://pypi.python.org/pypi/mwklient):
 
 ```

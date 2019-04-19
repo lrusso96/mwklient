@@ -351,7 +351,7 @@ class TestLogin(TestCase):
 
         assert len(call_args) == 3
         assert call_args[0] == mock.call(
-            'query', 'GET', meta='tokens', type_t='login')
+            'query', 'GET', meta='tokens', type='login')
         assert call_args[1] == mock.call(
             'login', 'POST', lgname='myusername', lgpassword='mypassword')
         assert call_args[2] == mock.call(
@@ -384,7 +384,7 @@ class TestLogin(TestCase):
 
         assert len(call_args) == 2
         assert call_args[0] == mock.call(
-            'query', 'GET', meta='tokens', type_t='login')
+            'query', 'GET', meta='tokens', type='login')
         assert call_args[1] == mock.call(
             'login', 'POST', lgname='myusername', lgpassword='mypassword', lgtoken=login_token)
 
@@ -540,7 +540,7 @@ class TestClientGetTokens(TestCase):
         data = args[1]
 
         assert 'intoken' not in data
-        assert data.get('type_t') == 'csrf'
+        assert data.get('type') == 'csrf'
         assert 'csrf' in self.site.tokens
         assert self.site.tokens['csrf'] == 'sometoken'
         assert 'edit' not in self.site.tokens
@@ -556,7 +556,7 @@ class TestClientGetTokens(TestCase):
         args, kwargs = self.raw_call.call_args
         data = args[1]
 
-        assert 'type_t' not in data
+        assert 'type' not in data
         assert data.get('intoken') == 'edit'
         assert 'edit' in self.site.tokens
         assert self.site.tokens['edit'] == 'sometoken'

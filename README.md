@@ -26,16 +26,30 @@ Finally, it has a MIT license as well as the original mwclient.
 
 The current stable
 [version 0.0.1](https://github.com/lrusso96/mwklient/archive/v0.0.1.zip)
-is **not yet** [available through PyPI](https://pypi.python.org/pypi/mwklient):
+is [available through PyPI](https://pypi.python.org/pypi/mwklient):
 
 ```
 $ pip install mwklient
 ```
 
-The current [development version](https://github.com/lrusso96/mwklient) can be installed from GitHub:
+## Development
+The current [development version](https://github.com/lrusso96/mwklient) can be
+easily installed from GitHub, simply cloning the repo:
 
 ```
 $ pip install git+git://github.com/lrusso96/mwklient.git
+```
+
+In order to test your edits, build an *editable* version with the command:
+
+```
+$ pip install -e .
+```
+
+Finally, if you want to run tests, do
+
+```
+$ python setup.py test
 ```
 
 ## Documentation

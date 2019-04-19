@@ -4,11 +4,11 @@
 [![Build Status](https://travis-ci.com/lrusso96/mwklient.svg?token=uoNxtXYBDHpqERGMiZA8&branch=master)](https://travis-ci.com/lrusso96/mwklient)
 ![License: MIT](https://img.shields.io/github/license/lrusso96/mwklient.svg?color=blue)
 
-![Test coverage](https://img.shields.io/coveralls/github/lrusso96/mwklient.svg)
-![Latest vesion](https://img.shields.io/pypi/v/mwklient.svg)
+![Test Coverage](https://img.shields.io/coveralls/github/lrusso96/mwklient.svg)
+![Latest Version](https://img.shields.io/pypi/v/mwklient.svg)
 ![Python Version](https://img.shields.io/pypi/pyversions/mwklient.svg)
-
-
+[![Doc Status](https://readthedocs.org/projects/mwklient/badge/?version=latest)](https://mwklient.readthedocs.io/en/latest/?badge=latest)
+      
 
 mwklient (forked from [mwclient v0.9.3](https://github.com/mwclient/mwclient)) is a lightweight Python client library to the [MediaWiki API](https://mediawiki.org/wiki/API) which provides access to most API functionality.
 It works with Python 3.5+ and supports MediaWiki API 1.16+,
@@ -23,15 +23,20 @@ Finally, it has a MIT license as well as the original mwclient.
 ### List of new methods
 * page.undo(), revert a given edit page
 
-The current stable
-[version 0.0.1](https://github.com/lrusso96/mwklient/archive/v0.0.1.zip)
+## Installation
+The current stable [version 0.0.1](https://github.com/lrusso96/mwklient/archive/v0.0.1.zip)
 is [available through PyPI](https://pypi.python.org/pypi/mwklient):
 
 ```
 $ pip install mwklient
 ```
 
-## Development
+## Documentation
+Up-to-date documentation is hosted [at Read the Docs](http://mwklient.readthedocs.io/en/latest/).
+It includes a user guide to get started using mwclient, a reference guide, implementation and development notes.
+
+## Contributing
+Patches and PR are welcome! Consider also contributing to the original repo.
 The current [development version](https://github.com/lrusso96/mwklient) can be
 easily installed from GitHub, simply cloning the repo:
 
@@ -50,11 +55,3 @@ Finally, if you want to run tests, do
 ```
 $ python setup.py test
 ```
-
-## Documentation
-[TODO]
-
-For now, see [the original repo](https://github.com/mwclient/mwclient).
-
-## Contributing
-Patches and PR are welcome! Consider also contributing to the original repo.

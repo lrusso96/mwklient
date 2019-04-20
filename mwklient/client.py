@@ -37,7 +37,7 @@ class Site():
 
     Do not include the leading "http://".
 
-    mwknt assumes that the script path (where index.php and api.php are
+    mwklient assumes that the script path (where index.php and api.php are
     located) is '/w/'. If the site uses a different script path, you must
     specify this (path must end in a '/').
 

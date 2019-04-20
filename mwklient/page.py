@@ -1,7 +1,7 @@
 import time
 import six
 from six import text_type
-from mwklient.util import parse_timestamp
+from mwklient.util import strip_namespace, parse_timestamp
 import mwklient.listing
 import mwklient.errors
 
@@ -48,7 +48,7 @@ class Page():
         self.namespace = info.get('ns', 0)
         self.name = info.get('title', u'')
         if self.namespace:
-            self.page_title = self.strip_namespace(self.name)
+            self.page_title = strip_namespace(self.name)
         else:
             self.page_title = self.name
 
@@ -95,22 +95,6 @@ class Page():
     def __unicode__(self):
         return self.name
 
-    @staticmethod
-    def strip_namespace(title):
-        if title[0] == ':':
-            title = title[1:]
-        return title[title.find(':') + 1:]
-
-    @staticmethod
-    def normalize_title(title):
-        # TODO: Make site dependent
-        title = title.strip()
-        if title[0] == ':':
-            title = title[1:]
-        title = title[0].upper() + title[1:]
-        title = title.replace(' ', '_')
-        return title
-
     def can(self, action):
         """Check if the current user has the right to carry out some action
         with the current page.
@@ -126,7 +110,7 @@ class Page():
 
         return level in self.site.rights
 
-    def get_token(self, type_t, force=False):
+    def __get_token__(self, type_t, force=False):
         return self.site.get_token(type_t, force, title=self.name)
 
     def text(self,
@@ -199,7 +183,7 @@ class Page():
     def __do_edit__(self, **kwargs):
         result = self.site.post(
             'edit',
-            token=self.get_token('edit'),
+            token=self.__get_token__('edit'),
             **kwargs)
         if result['edit'].get('result').lower() == 'failure':
             raise mwklient.errors.EditError(self, result['edit'])
@@ -247,7 +231,7 @@ class Page():
         except mwklient.errors.APIError as err:
             if err.code == 'badtoken':
                 # Retry, but only once to avoid an infinite loop
-                self.get_token('edit', force=True)
+                self.__get_token__('edit', force=True)
                 try:
                     result = self.__do_edit__()
                 except mwklient.errors.APIError as err:
@@ -291,7 +275,7 @@ class Page():
         except mwklient.errors.APIError as err:
             if err.code == 'badtoken':
                 # Retry, but only once to avoid an infinite loop
-                self.get_token('edit', force=True)
+                self.__get_token__('edit', force=True)
                 try:
                     result = self.__do_edit__(**data)
                 except mwklient.errors.APIError as err:
@@ -347,7 +331,7 @@ class Page():
         result = self.site.post(
             'move', ('from', self.name),
             to=new_title,
-            token=self.get_token('move'),
+            token=self.__get_token__('move'),
             reason=reason,
             **data)
         return result['move']
@@ -375,7 +359,7 @@ class Page():
         result = self.site.post(
             'delete',
             title=self.name,
-            token=self.get_token('delete'),
+            token=self.__get_token__('delete'),
             reason=reason,
             **data)
         return result['delete']

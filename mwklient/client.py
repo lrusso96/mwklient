@@ -481,7 +481,7 @@ class Site():
 
             >>> try:
             ...     site.email('SomeUser', 'Some message', 'Some subject')
-            ... except mwklient.errors.NoSpecifiedEmailError as e:
+            ... except mwklient.errors.NoSpecifiedEmailError as err:
             ...     print 'The user does not accept email, or has not specified
             an email address.'
 
@@ -506,10 +506,10 @@ class Site():
         try:
             info = self.post('emailuser', target=user, subject=subject,
                              text=text, ccme=cc, token=token)
-        except errors.APIError as e:
-            if e.args[0] == u'noemail':
-                raise errors.NoSpecifiedEmail(user, e.args[1])
-            raise errors.EmailError(*e)
+        except errors.APIError as err:
+            if err.args[0] == u'noemail':
+                raise errors.NoSpecifiedEmail(user, err.args[1])
+            raise errors.EmailError(*err.args)
 
         return info
 
@@ -689,7 +689,7 @@ class Site():
             'filename': filename,
             'comment': comment,
             'text': text,
-            'token': image.get_token('edit'),
+            'token': image.__get_token__('edit'),
         }
 
         if ignore:

@@ -6,6 +6,22 @@ from io import BytesIO
 from time import strptime
 
 
+def strip_namespace(title):
+    if title[0] == ':':
+        title = title[1:]
+    return title[title.find(':') + 1:]
+
+
+def normalize_title(title):
+    # TODO: Make site dependent
+    title = title.strip()
+    if title[0] == ':':
+        title = title[1:]
+    title = title[0].upper() + title[1:]
+    title = title.replace(' ', '_')
+    return title
+
+
 def parse_timestamp(timestamp):
     """Parses a string to a time tuple.
 

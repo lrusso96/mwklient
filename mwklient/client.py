@@ -1,15 +1,8 @@
 # encoding=utf-8
 from collections import OrderedDict
-import warnings
 import logging
-from six import text_type
 import six
-
-
-try:
-    import json
-except ImportError:
-    import simplejson as json
+from six import text_type
 import requests
 from requests.auth import HTTPBasicAuth, AuthBase
 from requests_oauthlib import OAuth1
@@ -18,6 +11,13 @@ import mwklient.errors as errors
 import mwklient.listing as listing
 from mwklient.sleep import Sleepers
 from mwklient.util import parse_timestamp, read_in_chunks
+from mwklient.util import version_tuple_from_generator
+
+
+try:
+    import json
+except ImportError:
+    import simplejson as json
 
 try:
     import gzip
@@ -37,7 +37,7 @@ class Site():
 
     Do not include the leading "http://".
 
-    mwknt assumes that the script path (where index.php and api.php are
+    mwklient assumes that the script path (where index.php and api.php are
     located) is '/w/'. If the site uses a different script path, you must
     specify this (path must end in a '/').
 
@@ -164,7 +164,7 @@ class Site():
         }
         self.writeapi = 'writeapi' in self.site
 
-        self.version = self.version_tuple_from_generator(
+        self.version = version_tuple_from_generator(
             self.site['generator'])
 
         # Require MediaWiki version >= 1.16
@@ -176,46 +176,6 @@ class Site():
         self.groups = userinfo.get('groups', [])
         self.rights = userinfo.get('rights', [])
         self.initialized = True
-
-    @staticmethod
-    def version_tuple_from_generator(string, prefix='MediaWiki '):
-        """Return a version tuple from a MediaWiki Generator string.
-
-        Example:
-            "MediaWiki 1.5.1" → (1, 5, 1)
-
-        Args:
-            prefix (str): The expected prefix of the string
-        """
-        if not string.startswith(prefix):
-            raise errors.MediaWikiVersionError(
-                'Unknown generator {}'.format(string))
-
-        version = string[len(prefix):].split('.')
-
-        def split_num(s):
-            """Split the string on the first non-digit character.
-
-            Returns:
-                A tuple of the digit part as int and, if available,
-                the rest of the string.
-            """
-            i = 0
-            while i < len(s):
-                if s[i] < '0' or s[i] > '9':
-                    break
-                i += 1
-            if s[i:]:
-                return (int(s[:i]), s[i:], )
-            return (int(s[:i]), )
-
-        version_tuple = sum((split_num(s) for s in version), ())
-
-        if len(version_tuple) < 2:
-            raise errors.MediaWikiVersionError('Unknown MediaWiki {}'
-                                               .format('.'.join(version)))
-
-        return version_tuple
 
     default_namespaces = {
         0: u'', 1: u'Talk', 2: u'User', 3: u'User talk', 4: u'Project',

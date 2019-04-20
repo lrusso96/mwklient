@@ -4,6 +4,47 @@ to parse timestamps, read streams in chunks, etc.
 
 from io import BytesIO
 from time import strptime
+import mwklient.errors as errors
+
+
+def version_tuple_from_generator(string, prefix='MediaWiki '):
+    """Return a version tuple from a MediaWiki Generator string.
+
+    Example:
+        "MediaWiki 1.5.1" → (1, 5, 1)
+
+    Args:
+        prefix (str): The expected prefix of the string
+    """
+    if not string.startswith(prefix):
+        raise errors.MediaWikiVersionError(
+            'Unknown generator {}'.format(string))
+
+    version = string[len(prefix):].split('.')
+
+    def split_num(s):
+        """Split the string on the first non-digit character.
+
+        Returns:
+            A tuple of the digit part as int and, if available,
+            the rest of the string.
+        """
+        i = 0
+        while i < len(s):
+            if s[i] < '0' or s[i] > '9':
+                break
+            i += 1
+        if s[i:]:
+            return (int(s[:i]), s[i:], )
+        return (int(s[:i]), )
+
+    version_tuple = sum((split_num(s) for s in version), ())
+
+    if len(version_tuple) < 2:
+        raise errors.MediaWikiVersionError('Unknown MediaWiki {}'
+                                           .format('.'.join(version)))
+
+    return version_tuple
 
 
 def strip_namespace(title):

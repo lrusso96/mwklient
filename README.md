@@ -24,7 +24,7 @@ Finally, it has a MIT license as well as the original mwclient.
 * page.undo(), revert a given edit page
 
 ## Installation
-The current stable [version 0.0.3](https://github.com/lrusso96/mwklient/archive/v0.0.3.zip)
+The current stable [version 0.0.4](https://github.com/lrusso96/mwklient/archive/v0.0.4.zip)
 is [available through PyPI](https://pypi.python.org/pypi/mwklient):
 
 ```

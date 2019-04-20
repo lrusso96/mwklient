@@ -16,7 +16,7 @@ NEEDS_PYTEST = set(['pytest', 'test', 'ptr']).intersection(sys.argv)
 PYTEST_RUNNER = ['pytest-runner'] if NEEDS_PYTEST else []
 
 setup(name='mwklient',
-      version='0.0.3',  # Use bumpversion to update
+      version='0.0.4',  # Use bumpversion to update
       description='MediaWiki API client',
       long_description=README,
       long_description_content_type='text/markdown',
@@ -31,7 +31,7 @@ setup(name='mwklient',
       author_email='russo.1699981@studenti.unroma1.it',
       url='https://github.com/lrusso96/mwklient',
       license='MIT',
-      packages=['mwklient'],
+      packages=['mwklient', 'mwklient.pages'],
       install_requires=['requests_oauthlib', 'six'],
       setup_requires=PYTEST_RUNNER,
       tests_require=['pytest', 'pytest-pep8', 'pytest-cache', 'pytest-cov',

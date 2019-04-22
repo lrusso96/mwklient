@@ -4,8 +4,8 @@
 [![Build Status](https://travis-ci.com/lrusso96/mwklient.svg?token=uoNxtXYBDHpqERGMiZA8&branch=master)](https://travis-ci.com/lrusso96/mwklient)
 ![License: MIT](https://img.shields.io/github/license/lrusso96/mwklient.svg?color=blue)
 
-![Test Coverage](https://img.shields.io/coveralls/github/lrusso96/mwklient.svg)
-![Latest Version](https://img.shields.io/pypi/v/mwklient.svg)
+[![Test Coverage](https://img.shields.io/coveralls/github/lrusso96/mwklient.svg)](https://coveralls.io/github/lrusso96/mwklient)
+[![Latest Version](https://img.shields.io/pypi/v/mwklient.svg)](https://pypi.org/project/mwklient)
 ![Python Version](https://img.shields.io/pypi/pyversions/mwklient.svg)
 [![Doc Status](https://readthedocs.org/projects/mwklient/badge/?version=latest)](https://mwklient.readthedocs.io/en/latest/?badge=latest)
 

@@ -14,7 +14,7 @@ mwklient (forked from [mwclient v0.9.3](https://github.com/mwclient/mwclient)) i
 It works with Python 3.5+ and supports MediaWiki API 1.16+,
 for functions not available in the current MediaWiki, a `MediaWikiVersionError` is raised.
 
-## mwklient and mwclient
+## mwklient vs mwclient
 The original project mwclient is still active and supports Python 2.7 too.
 mwklient is forked from the version 0.9.3 of mwclient and wraps some more api_calls (see next section).
 Moreover, it will support default error handlers for the most common calls (more details in next commits).

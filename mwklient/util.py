@@ -3,7 +3,7 @@ to parse timestamps, read streams in chunks, etc.
 """
 
 from io import BytesIO
-from time import strptime
+from time import strptime, struct_time
 import mwklient.errors as errors
 
 
@@ -63,22 +63,6 @@ def normalize_title(title):
     return title
 
 
-def strip_namespace(title):
-    if title[0] == ':':
-        title = title[1:]
-    return title[title.find(':') + 1:]
-
-
-def normalize_title(title):
-    # TODO: Make site dependent
-    title = title.strip()
-    if title[0] == ':':
-        title = title[1:]
-    title = title[0].upper() + title[1:]
-    title = title.replace(' ', '_')
-    return title
-
-
 def parse_timestamp(timestamp):
     """Parses a string to a time tuple.
 
@@ -92,7 +76,7 @@ def parse_timestamp(timestamp):
     Raises:
     """
     if not timestamp or timestamp == '0000-00-00T00:00:00Z':
-        return (0, 0, 0, 0, 0, 0, 0, 0, 0)
+        return struct_time((0, 0, 0, 0, 0, 0, 0, 0, 0))
     return strptime(timestamp, '%Y-%m-%dT%H:%M:%SZ')
 
 

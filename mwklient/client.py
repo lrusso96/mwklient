@@ -348,11 +348,8 @@ class Site():
         scheme = self.scheme
         host = self.host
         if isinstance(host, (list, tuple)):
-            warnings.warn(
-                'Specifying host as tuple is deprecated as of mwklient 0.5.0.'
-                + 'Please use the new scheme argument instead.',
-                DeprecationWarning
-            )
+            msg = 'Specifying host as tuple is deprecated: use scheme arg.'
+            warnings.warn(msg, DeprecationWarning)  # noqa
             scheme, host = host
 
         url = '{scheme}://{host}{path}{script}{ext}'.format(

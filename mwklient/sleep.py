@@ -8,19 +8,23 @@ LOG = logging.getLogger(__name__)
 class Sleepers():
 
     """
-    A class that allows for the creation of multiple `Sleeper` objects with shared
+    A class that allows for the creation of multiple `Sleeper` objects with
+    shared
     arguments.
     Examples:
-        Firstly a `Sleepers` object containing the shared attributes has to be created.
+        Firstly a `Sleepers` object containing the shared attributes has to be
+        created.
         >>> max_retries, retry_timeout = 5, 5
         >>> sleepers = Sleepers(max_retries, retry_timeout)
-        From this `Sleepers` object multiple individual `Sleeper` objects can be created
+        From this `Sleepers` object multiple individual `Sleeper` objects can
+        be created
         using the `make` method.
         >>> sleeper = sleepers.make()
     Args:
         max_retries (int): The maximum number of retries to perform.
         retry_timeout (int): The time to sleep for each past retry.
-        callback (Callable[[int, Any], None]): A callable to be called on each retry.
+        callback (Callable[[int, Any], None]): A callable to be called on each
+        retry.
     Attributes:
         max_retries (int): The maximum number of retries to perform.
         retry_timeout (int): The time to sleep for each past retry.
@@ -46,9 +50,12 @@ class Sleepers():
 
 class Sleeper():
     """
-    For any given operation, a `Sleeper` object keeps count of the number of retries.
-    For each retry, the sleep time increases until the max number of retries is reached
-    and a `MaximumRetriesExceeded` is raised. The sleeper object should be discarded
+    For any given operation, a `Sleeper` object keeps count of the number of
+    retries.
+    For each retry, the sleep time increases until the max number of retries
+    is reached
+    and a `MaximumRetriesExceeded` is raised. The sleeper object should be
+    discarded
     once the operation is successful.
     Args:
         args (Any): Arguments to be passed to the `callback` callable.
@@ -72,12 +79,13 @@ class Sleeper():
 
     def sleep(self, min_time=0):
         """
-        Sleeps for a minimum of `min_time` seconds. The actual sleeping time will increase
-        with the number of retries.
+        Sleeps for a minimum of `min_time` seconds. The actual sleeping time
+        will increase with the number of retries.
         Args:
             min_time (int): The minimum sleeping time.
         Raises:
-            MaximumRetriesExceeded: If the number of retries exceeds the maximum.
+            MaximumRetriesExceeded: If the number of retries exceeds the
+            maximum.
         """
         self.retries += 1
         if self.retries > self.max_retries:

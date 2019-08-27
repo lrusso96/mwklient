@@ -1,23 +1,19 @@
 # http://about.travis-ci.org/docs/user/languages/python/
 
-sudo: false
 language: python
 
-matrix:
-  include:
-    - python: 3.5
-    - python: 3.6
-    - python: 3.7
-      dist: xenial
-      sudo: true
-      # github.com/travis-ci/travis-ci/issues/9815#issuecomment-426312699
+python:
+  - 3.5
+  - 3.6
+  - 3.7
 
 install:
   - python setup.py install
-  - pip install coveralls
+  - pip install coveralls flake8
 
 script:
   - python setup.py test
+  - flake8 mwklient
 
 after_success:
   - coveralls

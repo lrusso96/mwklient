@@ -9,7 +9,7 @@
 # All configuration values have a default; values that are commented out
 # serve to show the default.
 
-from mwklient import __ver__
+from mwklient import __version__
 import mwklient
 import sphinx_rtd_theme
 import datetime
@@ -59,7 +59,7 @@ copyright = u'{0}, Luigi Russo'.format(datetime.datetime.now().year)
 # built documents.
 #
 # The short X.Y version.
-version = __ver__
+version = __version__
 # The full version, including alpha/beta/rc tags.
 release = version
 
@@ -109,7 +109,7 @@ pygments_style = 'sphinx'
 
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 html_theme = 'sphinx_rtd_theme'
-# html_theme_options = {'github_fork': 'mwclient/mwclient'}
+# html_theme_options = {'github_fork': 'lrusso96/mwklient'}
 
 html_theme_options = {
     # 'sticky_navigation': True  # Set to False to disable the sticky nav while scrolling.
@@ -193,21 +193,21 @@ htmlhelp_basename = 'mwklientdoc'
 
 latex_elements = {
     # The paper size ('letterpaper' or 'a4paper').
-    #'papersize': 'letterpaper',
+    # 'papersize': 'letterpaper',
 
     # The font size ('10pt', '11pt' or '12pt').
-    #'pointsize': '10pt',
+    # 'pointsize': '10pt',
 
     # Additional stuff for the LaTeX preamble.
-    #'preamble': '',
+    # 'preamble': '',
 }
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-  ('index', 'mwklient.tex', u'mwklient Documentation',
-   u'Luigi Russo', 'manual'),
+    ('index', 'mwklient.tex', u'mwklient Documentation',
+     u'Luigi Russo', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -250,9 +250,9 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-  ('index', 'mwklient', u'mwklient Documentation',
-   u'Luigi Russo', 'mwklient', 'One line description of project.',
-   'Miscellaneous'),
+    ('index', 'mwklient', u'mwklient Documentation',
+     u'Luigi Russo', 'mwklient', 'One line description of project.',
+     'Miscellaneous'),
 ]
 
 # Documents to append as an appendix to all manuals.
@@ -270,5 +270,5 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-  'requests': ('http://requests.readthedocs.org/en/latest/', None)
+    'requests': ('http://requests.readthedocs.org/en/latest/', None)
 }

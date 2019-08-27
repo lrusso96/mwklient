@@ -29,8 +29,8 @@ OTHER DEALINGS IN THE SOFTWARE.
 
 import logging
 import warnings
-from mwklient.errors import *  # pylint: disable=unused-import
-from mwklient.client import Site, __ver__  # pylint: disable=unused-import
+from mwklient.errors import *  # noqa: F401, F403
+from mwklient.client import Site, __version__  # noqa: F401
 
 # Show DeprecationWarning
 warnings.simplefilter('always', DeprecationWarning)

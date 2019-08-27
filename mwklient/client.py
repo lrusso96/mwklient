@@ -24,9 +24,12 @@ try:
 except ImportError:
     gzip = None
 
-__ver__ = '0.0.4'
+__version__ = '0.0.5'
 
 LOG = logging.getLogger(__name__)
+
+USER_AGENT = 'mwklient/{} ({})'.format(__version__,
+                                       'https://github.com/lrusso96/mwklient')
 
 
 class Site():
@@ -55,7 +58,7 @@ class Site():
                  max_lag=3, compress=True, force_login=True, do_init=True,
                  httpauth=None, reqs=None, consumer_token=None,
                  consumer_secret=None, access_token=None, access_secret=None,
-                 client_certificate=None, custom_headers=None):
+                 client_certificate=None, custom_headers=None, scheme='https'):
         # Setup member variables
         self.host = host
         self.path = path
@@ -66,6 +69,7 @@ class Site():
         self.force_login = force_login
         self.logged_in = False
         self.requests = reqs or {}
+        self.scheme = scheme
         if 'timeout' not in self.requests:
             self.requests['timeout'] = 30  # seconds
 
@@ -97,18 +101,16 @@ class Site():
         if pool is None:
             self.connection = requests.Session()
             self.connection.auth = auth
+
             if client_certificate:
                 self.connection.cert = client_certificate
-            prefix = ''
+            # Set User-Agent header field
             if clients_useragent:
-                prefix = '{} - '.format(clients_useragent)
-            self.connection.headers['User-Agent'] = (
-                '{prefix}mwknt/{ver} ({url})'.format(
-                    prefix=prefix,
-                    ver=__ver__,
-                    url='https://github.com/lrusso96/mwklient'
-                )
-            )
+                ua = clients_useragent + ' ' + USER_AGENT
+            else:
+                ua = USER_AGENT
+            self.connection.headers['User-Agent'] = ua
+
             if custom_headers:
                 self.connection.headers.update(custom_headers)
         else:
@@ -285,7 +287,9 @@ class Site():
 
             # cope with https://phabricator.wikimedia.org/T106066
             error_code = info['error'].get('code')
-            if (error_code == u'mwoauth-invalid-authorization' and 'Nonce already used' in info['error'].get('info')):
+            invalid_mwoauth = error_code == u'mwoauth-invalid-authorization'
+            unused_nonce = 'Nonce already used'
+            if invalid_mwoauth and unused_nonce in info['error'].get('info'):
                 LOG.warning(
                     'retrying due to nonce error '
                     'https://phabricator.wikimedia.org/T106066')
@@ -341,9 +345,14 @@ class Site():
             headers['Accept-Encoding'] = 'gzip'
         sleeper = self.sleepers.make((script, data))
 
-        scheme = 'https'
+        scheme = self.scheme
         host = self.host
         if isinstance(host, (list, tuple)):
+            warnings.warn(
+                'Specifying host as tuple is deprecated as of mwklient 0.5.0.'
+                + 'Please use the new scheme argument instead.',
+                DeprecationWarning
+            )
             scheme, host = host
 
         url = '{scheme}://{host}{path}{script}{ext}'.format(
@@ -855,19 +864,20 @@ class Site():
                limit=None, prop='id|user|by|timestamp|expiry|reason|flags'):
         """Retrieve blocks as a generator.
 
-        Each block is a dictionary containing:
-
-        - user: the username or IP address of the user
-        - id: the ID of the block
-        - timestamp: when the block was added
-        - expiry: when the block runs out (infinity for indefinite blocks)
-        - reason: the reason they are blocked
-        - allowusertalk: key is present ("" string) if the user is allowed to
-          edit their user talk page
-        - by: the administrator who blocked the user
-        - nocreate: key is present (empty string) if the user's ability to
-          create accounts has been disabled.
-
+        Returns:
+            mwklient.listings.List: Generator yielding dicts,
+            each dict containing:
+                - user: The username or IP address of the user
+                - id: The ID of the block
+                - timestamp: When the block was added
+                - expiry: When the block runs out (infinity for indefinite
+                blocks)
+                - reason: The reason they are blocked
+                - allowusertalk: Key is present (empty string) if the user
+                is allowed to edit their user talk page
+                - by: the administrator who blocked the user
+                - nocreate: key is present (empty string) if the user's ability
+                to create accounts has been disabled.
         """
 
         # TODO: Fix. Fix what?
@@ -901,11 +911,13 @@ class Site():
 
         See <https://meta.wikimedia.org/wiki/Help:Linksearch> for details.
 
-        The generator returns dictionaries containing three keys:
-        - url: the URL linked to.
-        - ns: namespace of the wiki page
-        - pageid: the ID of the wiki page
-        - title: the page title.
+        Returns:
+            mwklient.listings.List: Generator yielding dicts,
+            each dict containing:
+                - url: The URL linked to.
+                - ns: Namespace of the wiki page
+                - pageid: The ID of the wiki page
+                - title: The page title.
 
         """
 
@@ -1037,10 +1049,10 @@ class Site():
         return listing.List(self, 'search', 'sr', limit=limit, **kwargs)
 
     def usercontributions(self, user, start=None, end=None, direc='older',
-                          namespace=None, prop=None, show=None, limit=None):
+                          namespace=None, prop=None, show=None, limit=None,
+                          uselang=None):
         """
-        List the contributions made by a given user to the wiki, à la
-        Special:Contributions.
+        List the contributions made by a given user to the wiki
 
         API doc: https://www.mediawiki.org/wiki/API:Usercontribs
         """
@@ -1049,7 +1061,8 @@ class Site():
                                                    direc=direc,
                                                    namespace=namespace,
                                                    prop=prop, show=show))
-        return listing.List(self, 'usercontribs', 'uc', limit=limit, **kwargs)
+        return listing.List(self, 'usercontribs', 'uc', limit=limit,
+                            uselang=uselang, **kwargs)
 
     def users(self, users, prop='blockinfo|groups|editcount'):
         """
@@ -1128,6 +1141,13 @@ class Site():
                                    http_method='GET', **kwargs)
             self.handle_api_result(results)  # raises APIError on error
             offset = results.get('query-continue-offset')
-            answers = results['query'].get('results') or {}
-            for key, value in answers.items():
-                yield {key: value}
+            answers = results['query'].get('results', [])
+
+            if isinstance(answers, dict):
+                # In older versions of Semantic MediaWiki, at least until 2.3.0
+                # a list was returned. In newer versions an object is returned
+                # with the page title as key.
+                answers = [answer for answer in answers.values()]
+
+            for answer in answers:
+                yield answer

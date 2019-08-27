@@ -135,7 +135,7 @@ class Page(READ.Mixin, EDIT.Mixin, LINK.Mixin, HAZARD.Mixin):
                   expandtemplates=False,
                   section=None,
                   diffto=None,
-                  slots=None):
+                  slots=None, uselang=None):
         """List revisions of the current page.
 
         API doc: https://www.mediawiki.org/wiki/API:Revisions
@@ -159,6 +159,8 @@ class Page(READ.Mixin, EDIT.Mixin, LINK.Mixin, HAZARD.Mixin):
                           revision respectively.
             slots (str): The content slot (Mediawiki >= 1.32) to retrieve
                 content from.
+            uselang (str): Language to use for parsed edit comments and other
+                           localized messages.
 
         Returns:
             mwklient.listings.List: Revision iterator
@@ -181,6 +183,7 @@ class Page(READ.Mixin, EDIT.Mixin, LINK.Mixin, HAZARD.Mixin):
 
         kwargs['rvdir'] = direc
         kwargs['rvprop'] = prop
+        kwargs['uselang'] = uselang
         if expandtemplates:
             kwargs['rvexpandtemplates'] = '1'
         if section is not None:

@@ -75,7 +75,7 @@ class AssertUserFailedError(MwKlientError):
 
     def __init__(self):
         super(AssertUserFailedError, self).__init__(
-            'By default, mwclient protects you from accidentally editing '
+            'By default, mwklient protects you from accidentally editing '
             'without being logged in. If you actually want to edit without '
             'logging in, you can set force_login on the Site object to False.'
         )

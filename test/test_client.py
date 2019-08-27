@@ -95,7 +95,7 @@ class TestClient(TestCase):
         # The version specified in setup.py should equal the one specified in client.py
         version = pkg_resources.require("mwklient")[0].version
 
-        assert version == mwklient.__ver__
+        assert version == mwklient.__version__
 
     @responses.activate
     def test_https_as_default(self):
@@ -141,7 +141,7 @@ class TestClient(TestCase):
 
         self.httpShouldReturn(self.metaResponseAsJson(), scheme='http')
 
-        site = mwklient.Site(('http', 'test.wikipedia.org'))
+        site = mwklient.Site('test.wikipedia.org', scheme='http')
 
         assert len(responses.calls) == 1
 
@@ -312,6 +312,90 @@ class TestClient(TestCase):
         assert excinfo.value.code is None
         assert excinfo.value.info == u'Certains « <nowiki>[[</nowiki> » dans votre requête n’ont pas été clos par des « ]] » correspondants.'
         assert len(responses.calls) == 1
+
+    @responses.activate
+    def test_smw_response_v0_5(self):
+        # Test that the old SMW results format is handled
+
+        site = self.stdSetup()
+        self.httpShouldReturn(json.dumps({
+            "query": {
+                "results": [
+                    {
+                        "exists": "",
+                        "fulltext": "Indeks (bibliotekfag)",
+                        "fullurl": "http://example.com/wiki/Indeks_(bibliotekfag)",
+                        "namespace": 0,
+                        "printouts": [
+                            {
+                                "0": "1508611329",
+                                "label": "Endringsdato"
+                            }
+                        ]
+                    },
+                    {
+                        "exists": "",
+                        "fulltext": "Serendipitet",
+                        "fullurl": "http://example.com/wiki/Serendipitet",
+                        "namespace": 0,
+                        "printouts": [
+                            {
+                                "0": "1508611394",
+                                "label": "Endringsdato"
+                            }
+                        ]
+                    }
+                ],
+                "serializer": "SMW\\Serializers\\QueryResultSerializer",
+                "version": 0.5
+            }
+        }), method='GET')
+
+        answers = set(result['fulltext'] for result in site.ask('test'))
+
+        assert answers == set(('Serendipitet', 'Indeks (bibliotekfag)'))
+
+    @responses.activate
+    def test_smw_response_v2(self):
+        # Test that the new SMW results format is handled
+
+        site = self.stdSetup()
+        self.httpShouldReturn(json.dumps({
+            "query": {
+                "results": {
+                    "Indeks (bibliotekfag)": {
+                        "exists": "1",
+                        "fulltext": "Indeks (bibliotekfag)",
+                        "fullurl": "http://example.com/wiki/Indeks_(bibliotekfag)",
+                        "namespace": 0,
+                        "printouts": {
+                            "Endringsdato": [{
+                                "raw": "1/2017/10/17/22/50/4/0",
+                                "label": "Endringsdato"
+                            }]
+                        }
+                    },
+                    "Serendipitet": {
+                        "exists": "1",
+                        "fulltext": "Serendipitet",
+                        "fullurl": "http://example.com/wiki/Serendipitet",
+                        "namespace": 0,
+                        "printouts": {
+                            "Endringsdato": [{
+                                "raw": "1/2017/10/17/22/50/4/0",
+                                "label": "Endringsdato"
+                            }]
+                        }
+                    }
+                },
+                "serializer": "SMW\\Serializers\\QueryResultSerializer",
+                "version": 2
+            }
+        }), method='GET')
+
+        answers = set(result['fulltext'] for result in site.ask('test'))
+
+        assert answers == set(('Serendipitet', 'Indeks (bibliotekfag)'))
 
     @responses.activate
     def test_repr(self):

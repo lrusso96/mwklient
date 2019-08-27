@@ -110,6 +110,17 @@ class Page(READ.Mixin, EDIT.Mixin, LINK.Mixin, HAZARD.Mixin):
 
         return level in self.site.rights
 
+    def cannot(self, action):
+        """Check if the current user has not the right to carry out some action
+        with the current page.
+
+        Example:
+            >>> page.cannot('edit')
+            True
+
+        """
+        return not self.can(action)
+
     def __get_token__(self, type_t, force=False):
         return self.site.get_token(type_t, force, title=self.name)
 

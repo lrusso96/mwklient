@@ -14,7 +14,7 @@ class Mixin:
         InsufficientPermission exception is raised.
 
         """
-        if not self.can('move'):
+        if self.cannot('move'):
             raise mwklient.errors.InsufficientPermission(self)
 
         if not self.site.writeapi:
@@ -40,7 +40,7 @@ class Mixin:
         InsufficientPermission exception is raised.
 
         """
-        if not self.can('delete'):
+        if self.cannot('delete'):
             raise mwklient.errors.InsufficientPermission(self)
 
         if not self.site.writeapi:

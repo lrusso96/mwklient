@@ -28,7 +28,7 @@ class Mixin:
             cache (bool): set to `False` to disable caching (default: `True`)
         """
 
-        if not self.can('read'):
+        if self.cannot('read'):
             raise mwklient.errors.InsufficientPermission(self)
         if not self.exists:
             return u''
@@ -68,7 +68,7 @@ class Mixin:
             raise mwklient.errors.AssertUserFailedError()
         if self.site.blocked:
             raise mwklient.errors.UserBlocked(self.site.blocked)
-        if not self.can('edit'):
+        if self.cannot('edit'):
             raise mwklient.errors.ProtectedPageError(self)
 
         if not self.site.writeapi:

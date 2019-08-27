@@ -27,7 +27,7 @@ class Mixin:
             cache (bool): set to `False` to disable caching (default: `True`)
         """
 
-        if not self.can('read'):
+        if self.cannot('read'):
             raise mwklient.errors.InsufficientPermission(self)
         if not self.exists:
             return u''

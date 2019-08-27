@@ -1,6 +1,8 @@
-<div align="center"><img src="docs/source/logo.svg" width="300"/></div>
+<div align="center">
+    <img alt="mwclient logo" src="docs/source/logo.png"/>
+    <h1>mwklient</h1>
+</div>
 
-# mwklient
 [![Build Status](https://travis-ci.com/lrusso96/mwklient.svg?token=uoNxtXYBDHpqERGMiZA8&branch=master)](https://travis-ci.com/lrusso96/mwklient)
 ![License: MIT](https://img.shields.io/github/license/lrusso96/mwklient.svg?color=blue)
 
@@ -24,7 +26,7 @@ Finally, it has a MIT license as well as the original mwclient.
 * page.undo(), revert a given edit page
 
 ## Installation
-The current stable [version 0.0.4](https://github.com/lrusso96/mwklient/archive/v0.0.4.zip)
+The current stable [version 0.0.4](https://github.com/lrusso96/mwklient/archive/v0.0.5.zip)
 is [available through PyPI](https://pypi.python.org/pypi/mwklient):
 
 ```

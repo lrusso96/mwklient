@@ -61,6 +61,15 @@ is handled under the hood so you don't have to worry about it.
     ...     dt = datetime.fromtimestamp(mktime(revision['timestamp']))
     ...     print '{}'.format(dt.strftime('%F %T'))
 
+
+Patrolling
+----------
+
+To revert / undo the edit of a specific page:
+
+    >>> page.undo(rev_id, summary='reverted this edit')
+
+
 Categories
 ----------
 

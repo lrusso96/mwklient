@@ -63,7 +63,7 @@ class Mixin:
             self._textcache[key] = text
         return text
 
-    def __check_edit__(self):
+    def _check_edit(self):
         if not self.site.logged_in and self.site.force_login:
             raise mwklient.errors.AssertUserFailedError()
         if self.site.blocked:
@@ -74,27 +74,23 @@ class Mixin:
         if not self.site.writeapi:
             raise mwklient.errors.NoWriteApi(self)
 
-    def __do_edit__(self, **kwargs):
-        result = self.site.post(
-            'edit',
-            token=self.__get_token__('edit'),
-            **kwargs)
-        if result['edit'].get('result').lower() == 'failure':
-            raise mwklient.errors.EditError(self, result['edit'])
-        return result
+    def handle_edit_error(self, err, summary):
+        if err.code == 'editconflict':
+            raise mwklient.errors.EditError(self, summary, err.info)
+        if err.code in {
+                'protectedtitle', 'cantcreate', 'cantcreate-anon',
+                'noimageredirect-anon', 'noimageredirect', 'noedit-anon',
+                'noedit', 'protectedpage', 'cascadeprotected',
+                'customcssjsprotected', 'protectednamespace-interface',
+                'protectednamespace'
+        }:
+            raise mwklient.errors.ProtectedPageError(self, err.code, err.info)
+        if err.code == 'assertuserfailed':
+            raise mwklient.errors.AssertUserFailedError()
+        raise err
 
-    def save(self,
-             text,
-             summary=u'',
-             minor=False,
-             bot=True,
-             section=None,
-             **kwargs):
-        """Update the text of a section or the whole page by performing an edit
-         operation.
-        """
-
-        self.__check_edit__()
+    def _edit(self, summary, minor, bot, section, **kwargs):
+        self._check_edit()
 
         data = {}
         if minor:
@@ -112,22 +108,30 @@ class Mixin:
         if section:
             data['section'] = section
 
-        data['title'] = self.name
-        data['text'] = text
-        data['summary'] = summary
         data.update(kwargs)
 
         if self.site.force_login:
             data['assert'] = 'user'
 
+        def do_edit():
+            result = self.site.post(
+                'edit',
+                title=self.name,
+                summary=summary,
+                token=self.__get_token__('edit'),
+                **data)
+            if result['edit'].get('result').lower() == 'failure':
+                raise mwklient.errors.EditError(self, result['edit'])
+            return result
+
         try:
-            result = self.__do_edit__(**data)
+            result = do_edit()
         except mwklient.errors.APIError as err:
             if err.code == 'badtoken':
                 # Retry, but only once to avoid an infinite loop
                 self.__get_token__('edit', force=True)
                 try:
-                    result = self.__do_edit__()
+                    result = do_edit()
                 except mwklient.errors.APIError as err:
                     self.handle_edit_error(err, summary)
             else:
@@ -148,61 +152,32 @@ class Mixin:
         self._textcache = {}
         return result['edit']
 
-    def undo(self, rev_id, summary=u'', bot=False, **kwargs):
-        """Revert an edit with revision id `rev`
+    def edit(self, text, summary=u'', minor=False, bot=True,
+             section=None, **kwargs):
+        """Update the text of a section or the whole page by performing an edit
+         operation.
         """
+        return self._edit(summary, minor, bot, section, text=text, **kwargs)
 
-        self.__check_edit__()
-        data = {}
-        if self.last_rev_time:
-            data['basetimestamp'] = time.strftime('%Y%m%d%H%M%S',
-                                                  self.last_rev_time)
-        if self.edit_time:
-            data['starttimestamp'] = time.strftime('%Y%m%d%H%M%S',
-                                                   self.edit_time)
+    def append(self, text, summary=u'', minor=False, bot=True,
+               section=None, **kwargs):
+        """Append text to a section or the whole page by performing an edit
+         operation.
+        """
+        return self._edit(summary, minor, bot, section,
+                          appendtext=text, **kwargs)
 
-        data['undo'] = rev_id
-        data['bot'] = '1' if bot else '0'
-        data['title'] = self.name
-        data['summary'] = summary
-        data.update(kwargs)
+    def prepend(self, text, summary=u'', minor=False, bot=True,
+                section=None, **kwargs):
+        """Prepend text to a section or the whole page by performing an edit
+         operation.
+        """
+        return self._edit(summary, minor, bot, section,
+                          prependtext=text, **kwargs)
 
-        if self.site.force_login:
-            data['assert'] = 'user'
-
-        try:
-            result = self.__do_edit__(**data)
-        except mwklient.errors.APIError as err:
-            if err.code == 'badtoken':
-                # Retry, but only once to avoid an infinite loop
-                self.__get_token__('edit', force=True)
-                try:
-                    result = self.__do_edit__(**data)
-                except mwklient.errors.APIError as err:
-                    self.handle_edit_error(err, summary)
-            else:
-                self.handle_edit_error(err, summary)
-
-        # 'newtimestamp' is not included if no change was made
-        if 'newtimestamp' in result['edit'].keys():
-            self.last_rev_time = parse_timestamp(
-                result['edit'].get('newtimestamp'))
-
-        # clear the page text cache
-        self._textcache = {}
-        return result['edit']
-
-    def handle_edit_error(self, err, summary):
-        if err.code == 'editconflict':
-            raise mwklient.errors.EditError(self, summary, err.info)
-        if err.code in {
-                'protectedtitle', 'cantcreate', 'cantcreate-anon',
-                'noimageredirect-anon', 'noimageredirect', 'noedit-anon',
-                'noedit', 'protectedpage', 'cascadeprotected',
-                'customcssjsprotected', 'protectednamespace-interface',
-                'protectednamespace'
-        }:
-            raise mwklient.errors.ProtectedPageError(self, err.code, err.info)
-        if err.code == 'assertuserfailed':
-            raise mwklient.errors.AssertUserFailedError()
-        raise err
+    # TODO check the correctness
+    def undo(self, rev_id, summary=u'', minor=False, bot=False, **kwargs):
+        """Revert an edit with revision id `rev_id`
+        """
+        return self._edit(summary, minor, bot, None,
+                          undo=rev_id, **kwargs)

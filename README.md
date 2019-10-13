@@ -35,7 +35,7 @@ $ pip install mwklient
 
 ## Documentation
 Up-to-date documentation is hosted [at Read the Docs](http://mwklient.readthedocs.io/en/latest/).
-It includes a user guide to get started using mwclient, a reference guide, implementation and development notes.
+It includes a user guide to get started using mwklient, a reference guide, implementation and development notes.
 
 ## Contributing
 Patches and PR are welcome! Consider also contributing to the original repo.
